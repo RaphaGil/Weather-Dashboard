@@ -1,0 +1,15 @@
+
+.weather-header{
+  background: linear-gradient(319deg, #fce055 0%, #256eff 37%, #46237a 100%);
+  
+}
+.search-button,
+.weather-search{
+  width: 35dvh;
+}
+
+.today{
+  border: solid lightgray 2px;
+}
+
+.firstDat{}
