@@ -1,32 +1,26 @@
 const APIKey = "b5711c612035188f45544a9bce61dd4d";
 
 function searchCity() {
-  // Listening to the click event and running the callback function
   $("#search-button").on("click", function (e) {
     e.preventDefault();
     // Save the search input value to a variable
     const cityInput = $(".weather-search").val();
     const searchHistory = []
-   
-    // Getting the OpenWeatherMap API data
+
     const queryUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&cnt=5&appid=${APIKey}&units=metric`;
 
-    // localStorage.setItem('searchHistory', searchHistory)
-    // Runs the fetch with the API URL and receives the info
     fetch(queryUrl)
-      // Wait for the response and configure the data
       .then(function (response) {
         return response.json();
       })
-      // Wait for the data
       .then(function (data) {
-        // When restarting the page, clean the sections
         $("#today").empty();
         $("#forecast").empty();
         $(".weather-search").val('');
 
         const weatherToday = $("#today");
-        weatherToday.css("border", "gray 2px solid");
+        weatherToday.css({"border": "gray 2px solid",
+        "background-color": "darkblue"});
         const weatherImg = $("<img>").attr(
           "src",
           `http://openweathermap.org/img/w/${data.weather[0].icon}.png`
@@ -52,12 +46,18 @@ function searchCity() {
         );
         saveBtn.attr('value', userInputSave)
 
-        userInputSave.css('margin-bottom', '10px')
-        userInputSave.css("background", "lightgray");
+        userInputSave.css({
+          "margin-bottom": "10px",
+          'background': "lightgray",
+
+        });
         history.append(userInputSave);
 
-        searchHistory.push(weatherImg.prop('outerHTML'), 
-        cityChosen.text(), dataTemp, dataWind, dataHum);
+        searchHistory.push(
+        weatherImg.prop('outerHTML'), 
+        cityChosen.text(), 
+        dataTemp, 
+        dataWind, dataHum);
 
         saveBtn.on("click", function () {
           console.log(saveBtn.text())
@@ -115,7 +115,7 @@ function searchCity() {
                 const humidity = `Humidity: ${Math.floor(forecastEntry.main.humidity)}%`;
 
                 const forecastList = $("#forecast");
-                const dayText = $('<p>').html(date + '<br>' + weatherIcon[0].outerHTML + '<b>' + '<b>' + temperature + '<br>' + wind + '<br>' + humidity);
+                const dayText = $('<p>').html(date + '<br>' + temperature + weatherIcon[0].outerHTML + '<b>' + '<b>' + '<br>' + wind + '<br>' + humidity);
 
                 const dayTextHtmlString = dayText.prop('outerHTML');
                 dayTextArray.push(dayTextHtmlString);
@@ -126,11 +126,12 @@ function searchCity() {
                   'display': 'flex',
                   'width': '210px',
                   'margin': '8px',
-                  'height': '200px',
+                  'height': '190px',
                   'align-content': 'center',
                   'background-color': 'lightblue',
                   'color': 'white',
-                  'padding': '10px'
+                  'padding': '10px',
+                  'background-color': 'darkblue',
                 })
                 firstDay.append(dayText);
                 forecastList.append(firstDay);
@@ -144,18 +145,13 @@ searchCity();
 
 
 function historySearch(city) {
-    
-        // Build forecast URL only if current weather is found
         const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${APIKey}&units=metric`;
-       
-        // Fetch 5-day forecast
         fetch(apiUrl)
           .then(function (response) {
             return response.json();
           })
           .then(function (forecastData) {
             const dayTextArray = [];
-            // For a 5-day forecast, you might consider selecting one entry per day (e.g., every 8 entries)
             for (let i = 2; i < forecastData.list.length; i += 8) {
               const forecastEntry = forecastData.list[i];
               const dateCreated = forecastEntry.dt_txt;
@@ -181,7 +177,7 @@ function historySearch(city) {
                   'display': 'flex',
                   'width': '190px',
                   'margin': '8px',
-                  'height': '290px',
+                  'height': '190px',
                   'align-content': 'center',
                   'background-color': 'darkblue',
                   'color': 'white',
@@ -195,9 +191,8 @@ function historySearch(city) {
             )
           }
 
-
-
 const searchHistory = []
+
 function reprintWeather() {
   $("#today").empty();
   $("#forecast").empty();
@@ -214,6 +209,4 @@ function reprintWeather() {
 
     cityNameBtn.append(storedData[0])
     weatherToday.append(cityNameBtn, storedData[2], '<br>','<br>', storedData[3], '<br>', '<br>', storedData[4], '<br>');
-
-
   }

@@ -32,13 +32,11 @@ To set up and view this project locally, follow these simple steps:
 
 ## Screenshots
 ### Dashboard Overview
-![Raphaela - Weather Dashboard]()
+![Raphaela - Weather Dashboard](https://github.com/RaphaGil/Quiz-Game/assets/128820385/6068b62b-81d4-4ba8-9532-aae849d06979)
 *Caption: Overview of the project's main webpage.*
 ### Dashboard Overview with the generated password
-![Forecast for today]()
+![Forecast for today and the next 5 days](https://github.com/RaphaGil/Quiz-Game/assets/128820385/7dde1dde-c222-4b14-b933-fc31bc376567)
 *Caption: A detailed view of the quiz questions.*
-![Forecast for the next 5 days]()
-*Caption: A detailed view of the results webpage showcasing the user initial and points.*
 
 ## Usage
 - JavaScript is employed to dynamically display content or sections based on user interactions or navigation, providing a more interactive and user-friendly experience. Server APIs allow developers to access their data and functionality by making requests with specific parameters to a URL.

@@ -45,33 +45,45 @@ searchHistory.push(
   dataWind, 
   dataHum);
 
+  localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
   weatherToday.css({
     'padding':'10px'
   })
 }
 
-function appendSaveButton(cityName) {
+function appendSaveButton(cityInput) {
+  const btnCreated = JSON.parse(localStorage.getItem('saveBtn')) || []; 
   const history = $(".list-group");
   const saveBtn = $("<button>");
-  const userInputSave = cityName; // Assuming you want to set the button text to the city name
-  saveBtn.text(userInputSave);
-  saveBtn.attr('value', userInputSave);
+  const userInputSave = cityInput; 
 
-  saveBtn.css({
-    'margin-bottom': '10px',
-    "background": "lightgray",
-    "height": '30px'
-  });
+  if (!btnCreated.includes(userInputSave)) {
+    saveBtn.text(userInputSave);
+    saveBtn.attr('value', userInputSave);
 
-  history.append(saveBtn);
+    btnCreated.push(userInputSave);
+    localStorage.setItem('saveBtn', JSON.stringify(btnCreated));
 
-  var saveBtnText = saveBtn.text();
+    saveBtn.css({
+      'margin-bottom': '10px',
+      'background': 'lightgray',
+      'height': '30px'
+    });
 
-  saveBtn.on("click", function () {
-    reprintWeather(saveBtnText);
-    historySearch(saveBtnText);
-  });
+    history.append(saveBtn);
+    saveBtn.on("click", function () {
+      reprintWeather(userInputSave);
+      historySearch(userInputSave);
+    });
+  } else {
+    console.log('City button already exists.');
+  }
+  
 }
+
+window.addEventListener('beforeunload', function () {
+  localStorage.removeItem('saveBtn');
+});
 
 function search5DayForecast(cityInput) {
   const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityInput}&appid=${APIKey}&units=metric`;
@@ -120,35 +132,43 @@ function display5DayForecast(forecastData) {
     firstDay.append(dayText);
     forecastList.append(firstDay);
 
+    localStorage.setItem('dayTextArray', JSON.stringify(dayTextArray));
   }
 }
 
 function historySearch(saveBtnText) {
   const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${saveBtnText}&appid=${APIKey}&units=metric`;
-  // Call search5DayForecast with the city name, not the full API URL
   search5DayForecast(saveBtnText)
     .then(forecastData => display5DayForecast(forecastData))
-    .catch(error => console.error("Error fetching forecast data:", error));
 }
 
-function reprintWeather(cityName) {
-  const queryUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${APIKey}&units=metric`;
-  searchCurrentWeather(cityName)
-  .then(data => displayCurrentWeather(data))
-  .catch(error => console.error("Error fetching forecast data:", error));
+function reprintWeather() {
+  $("#today").empty();
+  $("#forecast").empty();
+
+  const weatherToday = $("#today");
+  weatherToday.css({
+    "border": "gray 2px solid",
+    "padding": '10px'})
+
+    const printSearchHistory = localStorage.getItem('searchHistory')
+    const storedData = JSON.parse(printSearchHistory)
+    const cityNameBtn = $('<h1>').text(storedData[1])
+
+    // cityNameBtn.append(storedData[0])
+    weatherToday.append(cityNameBtn, storedData[2], '<br>','<br>', storedData[3], '<br>', '<br>', storedData[4], '<br>');
 }
 
 // Listening to the click event and running the callback function
 $("#search-button").on("click", function (e) {
   e.preventDefault();
+  
   const cityInput = $(".weather-search").val();
-
   searchCurrentWeather(cityInput)
     .then(function (data) {
       if (data.cod && data.cod !== 200) {
-        alert(`Error: ${data.message}`);
+        alert(`Input not found`);
       } else {
-        // Display current weather and proceed
         displayCurrentWeather(data);
         appendSaveButton(cityInput);
         return search5DayForecast(cityInput);
@@ -157,5 +177,4 @@ $("#search-button").on("click", function (e) {
     .then(function (forecastData) {
       display5DayForecast(forecastData);
     })
-    .catch(error => console.error("Error fetching data:", error));
 });
