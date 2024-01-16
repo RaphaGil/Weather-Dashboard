@@ -56,8 +56,8 @@ function appendSaveButton(cityInput) {
   const history = $(".list-group");
   const saveBtn = $("<button>");
   const userInputSave = cityInput; 
-
-  if (!btnCreated.includes(userInputSave)) {
+  const userInputLower = userInputSave.toLowerCase();
+  if (!btnCreated.some(btn => btn.toLowerCase() === userInputLower)) {
     saveBtn.text(userInputSave);
     saveBtn.attr('value', userInputSave);
 
@@ -78,7 +78,6 @@ function appendSaveButton(cityInput) {
   } else {
     console.log('City button already exists.');
   }
-  
 }
 
 window.addEventListener('beforeunload', function () {
@@ -155,19 +154,25 @@ function reprintWeather() {
     const storedData = JSON.parse(printSearchHistory)
     const cityNameBtn = $('<h1>').text(storedData[1])
 
-    // cityNameBtn.append(storedData[0])
+
     weatherToday.append(cityNameBtn, storedData[2], '<br>','<br>', storedData[3], '<br>', '<br>', storedData[4], '<br>');
 }
 
 // Listening to the click event and running the callback function
 $("#search-button").on("click", function (e) {
   e.preventDefault();
-  
+
   const cityInput = $(".weather-search").val();
+  if (!cityInput) {
+    alert('Please enter a city name.');
+    return; 
+  }
+  // Proceed with the API request
   searchCurrentWeather(cityInput)
     .then(function (data) {
       if (data.cod && data.cod !== 200) {
-        alert(`Input not found`);
+        alert(`The city has a typo`);
+        $(".weather-search").val('');
       } else {
         displayCurrentWeather(data);
         appendSaveButton(cityInput);
@@ -175,6 +180,10 @@ $("#search-button").on("click", function (e) {
       }
     })
     .then(function (forecastData) {
-      display5DayForecast(forecastData);
+      if (forecastData) {
+        display5DayForecast(forecastData);
+      }
     })
 });
+
+
