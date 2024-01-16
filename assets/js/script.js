@@ -1,31 +1,32 @@
 const APIKey = "b5711c612035188f45544a9bce61dd4d";
 
 function searchCity() {
-  //listening the click event and run the callback fuction
+  // Listening to the click event and running the callback function
   $("#search-button").on("click", function (e) {
     e.preventDefault();
-    //save my search input value to a variable
+    // Save the search input value to a variable
     const cityInput = $(".weather-search").val();
-  
-    
-    // getting the api openweathermap and its receives the search input and my API key
+    const searchHistory = []
+   
+    // Getting the OpenWeatherMap API data
     const queryUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&cnt=5&appid=${APIKey}&units=metric`;
 
-    //runs the fetch with the API Url and receive the info
+    // localStorage.setItem('searchHistory', searchHistory)
+    // Runs the fetch with the API URL and receives the info
     fetch(queryUrl)
-      //wait the response and configurate the data
+      // Wait for the response and configure the data
       .then(function (response) {
         return response.json();
       })
-      //wait for the data
+      // Wait for the data
       .then(function (data) {
-        //when restart the page clean the section
+        // When restarting the page, clean the sections
         $("#today").empty();
-        $("#forecast").empty()
+        $("#forecast").empty();
+        $(".weather-search").val('');
 
         const weatherToday = $("#today");
         weatherToday.css("border", "gray 2px solid");
-       
         const weatherImg = $("<img>").attr(
           "src",
           `http://openweathermap.org/img/w/${data.weather[0].icon}.png`
@@ -33,64 +34,186 @@ function searchCity() {
         const cityChosen = $("<h1>").text(
           `${data.name} ${dayjs().format("(DD/MM/YYYY)")}`
         );
-        const dataTemp = $("<p>").text(`Temp: ${data.main.temp}°C`);
-        const dataWind = $("<p>").text(`Wind: ${data.wind.speed}KPH`);
-        const dataHum = $("<p>").text(`Humidity: ${data.main.humidity}%`);
+        const dataTemp = `Temp: ${data.main.temp}°C`;
+        const dataWind = `Wind: ${data.wind.speed}KPH`;
+        const dataHum = `Humidity: ${data.main.humidity}%`;
 
-        weatherToday.append(cityChosen, dataTemp, dataWind, dataHum);
+        const dataParagraf = $("<p>").text(dataTemp)
+        const windParagraf = $("<p>").text(dataWind)
+        const humiParagraf = $("<p>").text(dataHum)
+
+        weatherToday.append(cityChosen, dataParagraf, windParagraf,  humiParagraf);
         cityChosen.append(weatherImg);
-
+     
         const history = $(".list-group");
-        const userInputSave = $("<p>").text(
+        const saveBtn = $("<button>")
+        const userInputSave = saveBtn.text(
           JSON.stringify(cityInput).replace(/"/g, "")
         );
+        saveBtn.attr('value', userInputSave)
+
+        userInputSave.css('margin-bottom', '10px')
         userInputSave.css("background", "lightgray");
         history.append(userInputSave);
 
-        // Build forecast URL only if current weather is found
-        const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${data.coord.lat}&lon=${data.coord.lon}&appid=${APIKey}&units=metric`;
+        searchHistory.push(weatherImg.prop('outerHTML'), 
+        cityChosen.text(), dataTemp, dataWind, dataHum);
 
+        saveBtn.on("click", function () {
+          console.log(saveBtn.text())
+          var saveBtnText = saveBtn.text()
+          localStorage.removeItem('searchHistory');
+          localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+          // localStorage.removeItem('dayTextArray')
+          historySearch(saveBtnText)
+
+          $("#weatherToday").empty();
+          reprintWeather();
+        });
+      })
+      //Alert if there is no input or has a typo
+      .catch(function (error) {
+        const history = $(".list-group")
+        const errorDisplay=$('<div>')
+        const errorMessage=$('<p>')
+        errorMessage.css('color', 'red')
+        errorDisplay.append(errorMessage)
+        history.append(errorDisplay)
+        if (!cityInput || (error.response && error.response.status === 404)) {
+          errorMessage.text('Please enter a city before searching or check for typos.');
+        } else {
+          // Handle other errors if needed
+          errorMessage.text('Please enter a city before searching or check for typos.')
+        }
+        setTimeout(function () {
+          errorDisplay.remove();
+        }, 3000);
+      });
+    
+        // Build forecast URL only if current weather is found
+        const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityInput}&appid=${APIKey}&units=metric`;
+       
         // Fetch 5-day forecast
         fetch(apiUrl)
           .then(function (response) {
             return response.json();
           })
           .then(function (forecastData) {
-            // Loop through the first 5 forecast entries
-            for (let i = 0; i < 5; i++) {
+            const dayTextArray = [];
+            // For a 5-day forecast, you might consider selecting one entry per day (e.g., every 8 entries)
+            for (let i = 2; i < forecastData.list.length; i += 8) {
               const forecastEntry = forecastData.list[i];
-               // Access individual forecast data for each entry
-              const firstDay = $('<div>')
-              firstDay.css({
-                'border': 'gray 2px solid',
-                'display': 'flex',
-                'width': '130px',
-                'margin': '10px',
-                'height': '200px',
-                'align-content': 'center'
-              })
-            //   const tempDiv = $('<div>')
-            //  tempDiv.css('background', 'pink')
-            //   const windDiv = $('<div>')
-            //   const humiDiv = $('<div>')
+              const dateCreated = forecastEntry.dt_txt;
+              const newDate = dateCreated.split(' ');
+              const date = dayjs(newDate[0]).format("DD/MM/YYYY")
+              const weatherIcon = $("<img>").attr(
+                "src",
+                `http://openweathermap.org/img/w/${forecastEntry.weather[0].icon}.png`
+              );
+                const temperature = `Temp: ${forecastEntry.main.temp}°C`;
+                const wind = `Wind: ${forecastEntry.wind.speed}KPH`;
+                const humidity = `Humidity: ${Math.floor(forecastEntry.main.humidity)}%`;
 
-              const date = (forecastEntry.dt_txt);
-              const temperature = forecastEntry.main.temp;
-              const wind = forecastEntry.wind.speed;
-              const humidity = forecastEntry.main.humidity;
-              
-              const forecastList = $("#forecast");
-  
-              const dayText = $('<p>').html(date + '<br>' + wind + '<br>' + temperature + '<br>' + humidity);
-             
-              firstDay.append(dayText)
-              forecastList.append(firstDay)
-  
-              
-            }
-          });
-      });
-  })}
+                const forecastList = $("#forecast");
+                const dayText = $('<p>').html(date + '<br>' + weatherIcon[0].outerHTML + '<b>' + '<b>' + temperature + '<br>' + wind + '<br>' + humidity);
 
+                const dayTextHtmlString = dayText.prop('outerHTML');
+                dayTextArray.push(dayTextHtmlString);
+
+                const firstDay = $('<div>')
+                firstDay.css({
+                  'border': 'gray 2px solid',
+                  'display': 'flex',
+                  'width': '210px',
+                  'margin': '8px',
+                  'height': '200px',
+                  'align-content': 'center',
+                  'background-color': 'lightblue',
+                  'color': 'white',
+                  'padding': '10px'
+                })
+                firstDay.append(dayText);
+                forecastList.append(firstDay);
+
+                localStorage.setItem('dayTextArray', JSON.stringify(dayTextArray));
+            }}
+            )
+          })}
 
 searchCity();
+
+
+function historySearch(city) {
+    
+        // Build forecast URL only if current weather is found
+        const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${APIKey}&units=metric`;
+       
+        // Fetch 5-day forecast
+        fetch(apiUrl)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (forecastData) {
+            const dayTextArray = [];
+            // For a 5-day forecast, you might consider selecting one entry per day (e.g., every 8 entries)
+            for (let i = 2; i < forecastData.list.length; i += 8) {
+              const forecastEntry = forecastData.list[i];
+              const dateCreated = forecastEntry.dt_txt;
+              const newDate = dateCreated.split(' ');
+              const date = dayjs(newDate[0]).format("DD/MM/YYYY")
+              const weatherIcon = $("<img>").attr(
+                "src",
+                `http://openweathermap.org/img/w/${forecastEntry.weather[0].icon}.png`
+              );
+                const temperature = `Temp: ${forecastEntry.main.temp}°C`;
+                const wind = `Wind: ${forecastEntry.wind.speed}KPH`;
+                const humidity = `Humidity: ${Math.floor(forecastEntry.main.humidity)}%`;
+
+                const forecastList = $("#forecast");
+                const dayText = $('<p>').html(date + '<br>' + weatherIcon[0].outerHTML + '<b>' + '<b>' + temperature + '<br>' + wind + '<br>' + humidity);
+
+                const dayTextHtmlString = dayText.prop('outerHTML');
+                dayTextArray.push(dayTextHtmlString);
+
+                const firstDay = $('<div>')
+                firstDay.css({
+                  'border': 'gray 2px solid',
+                  'display': 'flex',
+                  'width': '190px',
+                  'margin': '8px',
+                  'height': '290px',
+                  'align-content': 'center',
+                  'background-color': 'darkblue',
+                  'color': 'white',
+                  'padding': '10px'
+                })
+                firstDay.append(dayText);
+                forecastList.append(firstDay);
+
+                localStorage.setItem('dayTextArray', JSON.stringify(dayTextArray));
+            }}
+            )
+          }
+
+
+
+const searchHistory = []
+function reprintWeather() {
+  $("#today").empty();
+  $("#forecast").empty();
+
+  const weatherToday = $("#today");
+  weatherToday.css({
+    "border": "gray 2px solid",
+    "padding": '10px'})
+
+
+    const printSearchHistory = localStorage.getItem('searchHistory')
+    const storedData = JSON.parse(printSearchHistory)
+    const cityNameBtn = $('<h1>').text(storedData[1])
+
+    cityNameBtn.append(storedData[0])
+    weatherToday.append(cityNameBtn, storedData[2], '<br>','<br>', storedData[3], '<br>', '<br>', storedData[4], '<br>');
+
+
+  }

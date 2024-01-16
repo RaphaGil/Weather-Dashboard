@@ -12,4 +12,6 @@
   border: solid lightgray 2px;
 }
 
-.firstDat{}
+.forecast{
+  height: 190px;
+}
