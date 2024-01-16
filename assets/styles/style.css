@@ -1,6 +1,10 @@
+body{
+background-color: rgb(189, 225, 233);
+color: white;
+}
 
 .weather-header{
-  background: linear-gradient(319deg, #fce055 0%, #256eff 37%, #46237a 100%);
+  /* background: linear-gradient(319deg, #fce055 0%, #256eff 37%, #46237a 100%); */
   
 }
 .search-button,
