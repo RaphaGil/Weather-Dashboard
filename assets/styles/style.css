@@ -1,21 +1,75 @@
-body{
-background-color: rgb(189, 225, 233);
-color: white;
+body {
+  background-image: url('../src/img/cloud.jpg');
+  background-repeat:no-repeat;
+  background-size:auto;
+  color: white;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-style: oblique;
 }
 
-.weather-header{
-  /* background: linear-gradient(319deg, #fce055 0%, #256eff 37%, #46237a 100%); */
-  
+.bg-yellow-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(252 233 106 / var(--tw-bg-opacity));
+  color: #005c90;
 }
 .search-button,
 .weather-search{
   width: 35dvh;
+  margin-right: 5px;
 }
 
-.today{
-  border: solid lightgray 2px;
+#dashboard,
+#list-group,
+#search-form {
+  margin: 0 auto;
+}
+
+#search-input {
+  border-radius: 30px;
+  border: none;
+  color: lightgray;
+  height: 30px;
 }
 
 .forecast{
-  height: 190px;
+  padding: 20px;
+}
+
+aside {
+  background-color: rgba(0, 86, 144, 0.8); /* Adjust the alpha value (0.8 in this case) to control transparency */
+  border-radius: 15px;
+}
+
+#search-form {
+  padding: 20px; /* Optional: Add padding to the form */
+  border-radius: 10px; /* Optional: Add rounded corners to the form */
+}
+
+@media (min-width: 576px) {
+  #search-form {
+      flex-direction: row;
+  }
+}
+
+.input-group {
+  margin-bottom: 1rem; /* Optional: Add some spacing between input group elements */
+}
+
+.input-group-append {
+  margin-top: 1rem; /* Optional: Add some spacing between input group elements */
+}
+
+/* Adjust button and input size for mobile */
+@media (max-width: 575.98px) {
+  .input-group-append {
+      margin-top: 0;
+  }
+
+  .search-button {
+      margin-top: 0.5rem;
+  }
+
+  .weather-hr {
+      display: none; /* Hide horizontal rule for mobile */
+  }
 }
