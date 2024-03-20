@@ -167,12 +167,10 @@ function display5DayForecast(forecastData) {
     const firstDay = $('<div>')
     firstDay.css({
       'display': 'flex',
-      'justify-content': 'space-around',
+      'justify-content': 'space-between',
       'width': '170px',
-      'margin-left': '25px',
-      'margin-bottom': '20px',
+      'margin': '10px',
       'height': '290px',
-      'padding': '10px',
       'border-radius': '15px',
       'background-color': 'rgba(0, 86, 144, 0.8)',
     })
