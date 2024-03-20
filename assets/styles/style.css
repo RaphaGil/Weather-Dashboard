@@ -16,9 +16,10 @@ body {
 .weather-search{
   width: 35dvh;
   margin-right: 5px;
+  margin-top: 10px;
 }
 
-#dashboard,
+
 #list-group,
 #search-form {
   margin: 0 auto;
@@ -29,10 +30,6 @@ body {
   border: none;
   color: lightgray;
   height: 30px;
-}
-
-.forecast{
-  padding: 20px;
 }
 
 aside {
@@ -46,7 +43,7 @@ aside {
 }
 
 @media (min-width: 576px) {
-  #search-form {
+  #search-form{
       flex-direction: row;
   }
 }
@@ -72,4 +69,11 @@ aside {
   .weather-hr {
       display: none; /* Hide horizontal rule for mobile */
   }
+
+  #forecast{
+    display: flex;
+    justify-content: space-around;
+    margin-left: 0;
+  }
 }
+

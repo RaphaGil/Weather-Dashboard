@@ -32,10 +32,10 @@ To set up and view this project locally, follow these simple steps:
 
 ## Screenshots
 ### Dashboard Overview
-![Raphaela - Weather Dashboard](https://github.com/RaphaGil/Weather-Dashboard/assets/128820385/0fc9827f-1c72-499e-be0d-0e3d2cf62200)
+![Raphaela - Weather Dashboard](https://github.com/RaphaGil/Weather-Dashboard/assets/128820385/6d537f63-d175-4555-8218-488e7c2b7863)
 *Caption: Overview of the project's main webpage.*
 ### Dashboard Overview with the generated password
-![Forecast for today and the next 5 days](https://github.com/RaphaGil/Weather-Dashboard/assets/128820385/b64b3312-3af9-4e24-a126-05eddcc9ee65)
+![Forecast for today and the next 5 days](https://github.com/RaphaGil/Weather-Dashboard/assets/128820385/c4d4fa47-08e2-4b67-86ed-d30c4696a5f0)
 *Caption: A detailed view of the quiz questions.*
 
 ## Usage
