@@ -13,19 +13,20 @@ function displayCurrentWeather(data) {
   $("#today").empty();
   $(".weather-search").val('');
   const weatherToday = $("#today");
-
   const weatherImg = $("<img>").attr(
       "src",
       `http://openweathermap.org/img/w/${data.weather[0].icon}.png`
   ).css({
-      'width': '120px',
-      'height': '120px'
+      'width': '80px',
+      'height': 'auto',
   });
 
   const city = data.name;
   const cityChosen = $("<h1>").text(city).css({
       'font-weight': 'bold',
-      'color': 'rgb(252 233 106)'
+      // 'color': 'blue',
+      'font-size': '20px',
+   
   });
 
   const day = `${dayjs().format("dddd, DD MMM")}`;
@@ -46,11 +47,10 @@ function displayCurrentWeather(data) {
   const windParagraph = $("<p>").text(dataWind);
   const humiParagraph = $("<p>").text(dataHum);
 
-  const leftDiv = $("<div>").append(cityChosen,day,dataParagraph,feelsParagraph,);
-  const midDiv = $("<div>").append(weatherImg,weatherParagraph,);
-  const rightDiv = $("<div>").append( minParagraph, maxParagraph, windParagraph, humiParagraph);
+  const leftDiv = $("<div>").append(day, cityChosen,dataParagraph,feelsParagraph,);
+  const rightDiv = $("<div>").append( weatherImg,weatherParagraph, minParagraph, maxParagraph, windParagraph, humiParagraph);
 
-  weatherToday.append(leftDiv,midDiv,rightDiv);
+  weatherToday.append(leftDiv, rightDiv);
 
   const searchHistory = [];
   searchHistory.push(
@@ -63,17 +63,32 @@ function displayCurrentWeather(data) {
       dataWind,
       dataHum
   );
-
   localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
 
   weatherToday.css({
       'display': 'flex',
-      'justify-content':'space-around',
-      'padding': '20px',
-      'font-size': '20px',
-      'background-color': 'rgba(0, 86, 144, 0.8)',
-      'border-radius': '15px'
+      'flex-wrap': 'wrap',
+      'justify-content':'center',
+      'align-items': 'center',
+      'font-size': '14px',
+      'border-line': '2px',
+      'border-radius': '15px',
+      'background-color': 'rgba(144, 238, 144, 0.6)',
+      'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.5)',
   });
+      
+  weatherParagraph.css({
+    'font-size': '18px'
+  })
+  dataParagraph.css({
+    'font-size': '50px'
+  });
+  leftDiv.css({
+    'margin-right': '60px'
+    })
+  rightDiv.css({
+    // 'margin': '30px'
+    })
 }
 
 //Create and save a button for the user history 
@@ -82,6 +97,7 @@ function appendSaveButton(cityInput) {
   const history = $(".list-group");
   const saveBtn = $("<button>");
   const userInputSave = cityInput; 
+
   //New variable to compare lower and uppercase
   const userInputLower = userInputSave.toLowerCase();
   if (!btnCreated.some(btn => btn.toLowerCase() === userInputLower)) {
@@ -91,14 +107,14 @@ function appendSaveButton(cityInput) {
     btnCreated.push(userInputSave);
     localStorage.setItem('saveBtn', JSON.stringify(btnCreated));
     saveBtn.css({
-      'margin-bottom': '10px',
-      'height': '30px',
-      'background-color':'rgba(0, 86, 144, 0.8)',
-      'border': 'none',
-      'border-radius': '20px',
-      'width': 'auto',
-      'color': 'white'
-      
+      'border-radius': '10px',
+      'background-color': 'rgba(144, 238, 144, 0.6)',
+      'width': '100%',
+      'margin-bottom': '15px',
+      'border':'none',
+      'color': 'white',
+      'padding':'10px',
+      'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.5)' 
     });
 
     history.append(saveBtn);
@@ -136,6 +152,11 @@ window.addEventListener('beforeunload', function () {
 
 function display5DayForecast(forecastData) {
   const forecastList = $("#forecast");
+  forecastList.css({
+    'display': 'flex',
+    'flex-wrap':'wrap',
+    'justify-content':'center',    
+  })
   forecastList.empty();
   const dayTextArray = [];
 //i += 8 because I want to show the weather every 8h as I am using 16 days forecast
@@ -157,29 +178,28 @@ function display5DayForecast(forecastData) {
     const feelsLike = `Feels like: ${forecastEntry.main.feels_like}°C`;
     const temperature = `${forecastEntry.main.temp}°C`;
     
-
-    const dayText = $('<p>').html(weatherIcon[0].outerHTML+ '<b>' + date + '<br>' + weather+ '<br>' + temperature + '<br>' + feelsLike  );
-
+    const dayText = $('<p>').html(weatherIcon[0].outerHTML+  '<b>' + date + '<br>' + weather+ '<br>' + temperature + '<br>' + feelsLike  );
   
     const dayTextHtmlString = dayText.prop('outerHTML');
     dayTextArray.push(dayTextHtmlString);
     
     const firstDay = $('<div>')
     firstDay.css({
-      'display': 'flex',
-      'justify-content': 'space-between',
-      'width': '170px',
-      'margin': '10px',
-      'height': '290px',
+      'margin': '5px',
+      'height': 'auto',
       'border-radius': '15px',
-      'background-color': 'rgba(0, 86, 144, 0.8)',
+      'padding': '10px',
+      'width': 'auto',
+      'border': '5px solid rgba(144, 238, 144, 0.6)',
+      'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.1)'
     })
+  
     firstDay.append(dayText);
     forecastList.append(firstDay);
-
     localStorage.setItem('dayTextArray', JSON.stringify(dayTextArray));
   }
 }
+
 
 //Function to display conform the btn text
 function search5DayForecast(cityInput) {
@@ -227,3 +247,4 @@ $("#search-button").on("click", function (e) {
       }
     })
 })
+
