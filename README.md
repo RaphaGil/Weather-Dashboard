@@ -32,11 +32,8 @@ To set up and view this project locally, follow these simple steps:
 
 ## Screenshots
 ### Dashboard Overview
-![Raphaela - Weather Dashboard](https://github.com/RaphaGil/Weather-Dashboard/assets/128820385/6d537f63-d175-4555-8218-488e7c2b7863)
+![Raphaela - Weather Dashboard](https://github.com/RaphaGil/Weather-Dashboard/assets/128820385/f63874b0-d68a-4537-917e-58d9ca06a97f)
 *Caption: Overview of the project's main webpage.*
-### Dashboard Overview with the generated password
-![Forecast for today and the next 5 days](https://github.com/RaphaGil/Weather-Dashboard/assets/128820385/c4d4fa47-08e2-4b67-86ed-d30c4696a5f0)
-*Caption: A detailed view of the quiz questions.*
 
 ## Usage
 - JavaScript is employed to dynamically display content or sections based on user interactions or navigation, providing a more interactive and user-friendly experience. Server APIs allow developers to access their data and functionality by making requests with specific parameters to a URL.
